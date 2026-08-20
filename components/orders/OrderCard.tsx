@@ -42,7 +42,7 @@ export function OrderCard({ order }: OrderCardProps) {
         )}
         <div className="flex items-center justify-between text-lg font-semibold border-t pt-2">
           <span>Total</span>
-          <span>{formatCurrency(order.total)}</span>
+          <span>{formatCurrency(order.total.toString())}</span>
         </div>
         <div className="h-2 bg-muted rounded-full overflow-hidden">
           <div

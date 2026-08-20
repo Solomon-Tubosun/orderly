@@ -1,13 +1,18 @@
 "use client";
 
-import { OrderStatusHistory } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { formatDateTime } from "@/lib/utils";
 import { ORDER_STATUS_LABELS, ORDER_STATUS_ORDER } from "@/types/order";
 import { cn } from "@/lib/utils";
 
+interface StatusHistoryEntry {
+  status: string;
+  note?: string | null;
+  createdAt: Date | string;
+}
+
 interface OrderTimelineProps {
-  statusHistory: OrderStatusHistory[];
+  statusHistory: StatusHistoryEntry[];
   currentStatus: string;
 }
 

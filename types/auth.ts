@@ -1,14 +1,12 @@
-import { DefaultSession, DefaultUser } from "better-auth";
-import { UserRole, OrderType, OrderStatus, PaymentStatus } from "@prisma/client";
+import type { Session as BetterAuthSession, User as BetterAuthUser } from "better-auth";
+import type { UserRole, OrderType, OrderStatus, PaymentStatus } from "@prisma/client";
 
-declare module "better-auth" {
-  interface User extends DefaultUser {
-    role: UserRole;
-  }
-  
-  interface Session extends DefaultSession {
-    user: User;
-  }
-}
+export type Session = BetterAuthSession & {
+  user: User;
+};
+
+export type User = BetterAuthUser & {
+  role: UserRole;
+};
 
 export type { UserRole, OrderType, OrderStatus, PaymentStatus };

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { OrderType } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+
+type OrderType = "DINE_IN" | "DELIVERY" | "PICKUP";
 
 const ORDER_TYPES: { value: OrderType; label: string; description: string; icon: React.ReactNode }[] = [
   {

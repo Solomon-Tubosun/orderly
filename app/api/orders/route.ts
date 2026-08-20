@@ -49,7 +49,8 @@ export async function POST(request: NextRequest) {
     }
 
     const subtotal = cart.items.reduce(
-      (sum, item) => sum + item.quantity * Number(item.menuItem.price),
+      (sum: number, item: { quantity: number; menuItem: { price: { toString: () => string } } }) => 
+        sum + item.quantity * Number(item.menuItem.price.toString()),
       0
     );
 
@@ -91,12 +92,12 @@ export async function POST(request: NextRequest) {
       });
 
       await tx.orderItem.createMany({
-        data: cart.items.map((item) => ({
+        data: cart.items.map((item: { menuItemId: string; quantity: number; menuItem: { price: { toString: () => string } }; notes?: string | null }) => ({
           orderId: newOrder.id,
           menuItemId: item.menuItemId,
           quantity: item.quantity,
-          unitPrice: item.menuItem.price,
-          totalPrice: item.quantity * Number(item.menuItem.price),
+          unitPrice: Number(item.menuItem.price.toString()),
+          totalPrice: item.quantity * Number(item.menuItem.price.toString()),
           notes: item.notes,
         })),
       });

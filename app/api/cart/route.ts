@@ -25,9 +25,10 @@ export async function GET() {
     return NextResponse.json({ items: [], itemCount: 0, subtotal: 0 });
   }
 
-  const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  const itemCount = cart.items.reduce((sum: number, item: { quantity: number }) => sum + item.quantity, 0);
   const subtotal = cart.items.reduce(
-    (sum, item) => sum + item.quantity * Number(item.menuItem.price),
+    (sum: number, item: { quantity: number; menuItem: { price: { toString: () => string } } }) => 
+      sum + item.quantity * Number(item.menuItem.price.toString()),
     0
   );
 

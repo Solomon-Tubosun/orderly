@@ -10,7 +10,7 @@ export const menuItemSchema = z.object({
   isPopular: z.boolean().default(false),
   prepTime: z.coerce.number().int().positive("Prep time must be positive").default(15),
   allergens: z.array(z.string()).default([]),
-  nutrition: z.record(z.unknown()).optional(),
+  nutrition: z.record(z.string(), z.unknown()).optional(),
   sortOrder: z.coerce.number().int().default(0),
 });
 

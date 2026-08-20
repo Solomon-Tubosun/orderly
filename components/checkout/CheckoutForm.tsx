@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckoutInput, checkoutSchema } from "@/lib/validations/checkout";
+import { checkoutSchema, CheckoutFormData } from "@/lib/validations/checkout";
 import { OrderTypeSelector } from "./OrderTypeSelector";
 import { DeliveryAddressForm } from "./DeliveryAddressForm";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
-import { loadStripe } from "@stripe/stripe-js";
 
 interface CheckoutFormProps {
   subtotal: number;
@@ -30,10 +29,10 @@ export function CheckoutForm({ subtotal, itemCount, onSuccess }: CheckoutFormPro
   const [tip, setTip] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const form = useForm<CheckoutInput>({
-    resolver: zodResolver(checkoutSchema),
+  const form = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutSchema) as any,
     defaultValues: {
-      orderType: "PICKUP",
+      orderType: "PICKUP" as const,
       deliveryAddressId: "",
       deliveryNotes: "",
       tableNumber: undefined,
@@ -47,7 +46,7 @@ export function CheckoutForm({ subtotal, itemCount, onSuccess }: CheckoutFormPro
   const deliveryFee = form.watch("orderType") === "DELIVERY" ? DELIVERY_FEE : 0;
   const total = subtotal + tax + deliveryFee + tip;
 
-  const handleTypeSubmit = (data: CheckoutInput) => {
+  const handleTypeSubmit: SubmitHandler<CheckoutFormData> = (data) => {
     form.setValue("orderType", data.orderType);
     if (data.orderType === "DELIVERY") {
       setStep("details");
@@ -58,11 +57,11 @@ export function CheckoutForm({ subtotal, itemCount, onSuccess }: CheckoutFormPro
     }
   };
 
-  const handleDetailsSubmit = (data: CheckoutInput) => {
+  const handleDetailsSubmit: SubmitHandler<CheckoutFormData> = () => {
     setStep("payment");
   };
 
-  const handlePaymentSubmit = async (data: CheckoutInput) => {
+  const handlePaymentSubmit: SubmitHandler<CheckoutFormData> = async (data) => {
     setIsProcessing(true);
     try {
       const res = await fetch("/api/orders", {
@@ -127,7 +126,7 @@ export function CheckoutForm({ subtotal, itemCount, onSuccess }: CheckoutFormPro
                         type="number"
                         min="1"
                         placeholder="Table number"
-                        valueAsNumber={field.value}
+                        value={field.value?.toString() ?? ""}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
                     )}
@@ -145,7 +144,7 @@ export function CheckoutForm({ subtotal, itemCount, onSuccess }: CheckoutFormPro
                         min="1"
                         max="20"
                         placeholder="Number of guests"
-                        valueAsNumber={field.value}
+                        value={field.value?.toString() ?? ""}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
                     )}
@@ -229,7 +228,7 @@ export function CheckoutForm({ subtotal, itemCount, onSuccess }: CheckoutFormPro
         <h1 className="text-2xl font-bold">Checkout</h1>
       </div>
 
-      <Tabs value={step} onValueChange={setStep} className="w-full" defaultValue="type">
+      <Tabs value={step} onValueChange={(v) => setStep(v as "type" | "details" | "payment")} className="w-full" defaultValue="type">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="type" disabled={step !== "type"}>Order Type</TabsTrigger>
           <TabsTrigger value="details" disabled={step === "type"}>Details</TabsTrigger>
@@ -243,5 +242,3 @@ export function CheckoutForm({ subtotal, itemCount, onSuccess }: CheckoutFormPro
     </div>
   );
 }
-
-import { Controller } from "react-hook-form";

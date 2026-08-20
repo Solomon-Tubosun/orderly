@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -53,20 +52,21 @@ model User {
 }
 
 model Address {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  label       String
-  street      String
-  city        String
-  state       String
-  zipCode     String
-  country     String   @default("US")
-  isDefault   Boolean  @default(false)
-  latitude    Float?
-  longitude   Float?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label           String
+  street          String
+  city            String
+  state           String
+  zipCode         String
+  country         String   @default("US")
+  isDefault       Boolean  @default(false)
+  latitude        Float?
+  longitude       Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deliveryOrders  Order[]  @relation("OrderDeliveryAddress")
   
   @@map("addresses")
 }
@@ -138,14 +138,14 @@ model CartItem {
 
 model Order {
   id              String       @id @default(cuid())
-  orderNumber     String       @unique @default(auto()) @map("order_number")
+  orderNumber     String       @unique @map("order_number")
   userId          String
   user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   type            OrderType
   status          OrderStatus  @default(PENDING)
   paymentStatus   PaymentStatus @default(PENDING)
   
-  deliveryAddress Address?
+  deliveryAddress Address?     @relation("OrderDeliveryAddress", fields: [deliveryAddressId], references: [id])
   deliveryAddressId String?
   deliveryFee     Decimal      @default(0) @db.Decimal(10, 2)
   deliveryNotes   String?

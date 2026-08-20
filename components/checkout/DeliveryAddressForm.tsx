@@ -1,20 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AddressInput, addressSchema } from "@/lib/validations/checkout";
+import { addressSchema, AddressFormData } from "@/lib/validations/checkout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 interface DeliveryAddressFormProps {
   selectedAddressId?: string;
   onAddressSelect: (addressId: string) => void;
-  onNewAddress: (address: AddressInput) => void;
+  onNewAddress: (address: AddressFormData) => void;
 }
 
 export function DeliveryAddressForm({ selectedAddressId, onAddressSelect, onNewAddress }: DeliveryAddressFormProps) {
@@ -22,8 +23,8 @@ export function DeliveryAddressForm({ selectedAddressId, onAddressSelect, onNewA
   const [showNewAddress, setShowNewAddress] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<AddressInput>({
-    resolver: zodResolver(addressSchema),
+  const form = useForm<AddressFormData>({
+    resolver: zodResolver(addressSchema) as any,
     defaultValues: {
       label: "Home",
       street: "",
@@ -51,7 +52,7 @@ export function DeliveryAddressForm({ selectedAddressId, onAddressSelect, onNewA
     }
   };
 
-  const handleSubmit = async (data: AddressInput) => {
+  const handleSubmit: SubmitHandler<AddressFormData> = async (data) => {
     setIsLoading(true);
     try {
       const res = await fetch("/api/addresses", {
@@ -198,7 +199,8 @@ export function DeliveryAddressForm({ selectedAddressId, onAddressSelect, onNewA
                   render={({ field }) => (
                     <input
                       type="checkbox"
-                      {...field}
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
                       className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                     />
                   )}
@@ -217,5 +219,3 @@ export function DeliveryAddressForm({ selectedAddressId, onAddressSelect, onNewA
     </div>
   );
 }
-
-import { cn } from "@/lib/utils";

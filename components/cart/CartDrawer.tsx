@@ -4,7 +4,7 @@ import { useCart } from "@/components/providers/CartProvider";
 import { CartItem } from "./CartItem";
 import { CartSummary } from "./CartSummary";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { formatCurrency } from "@/lib/utils";
 import { X } from "lucide-react";
 

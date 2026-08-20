@@ -1,4 +1,6 @@
-import { MenuItem, Category } from "@prisma/client";
+import { MenuItem, Category as PrismaCategory } from "@prisma/client";
+
+export type Category = PrismaCategory;
 
 export type MenuItemWithCategory = MenuItem & {
   category: Category;

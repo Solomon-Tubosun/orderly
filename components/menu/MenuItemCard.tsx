@@ -80,7 +80,7 @@ export function MenuItemCard({ item }: MenuItemCardProps) {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold">{formatCurrency(item.price)}</p>
+            <p className="text-lg font-bold">{formatCurrency(item.price.toString())}</p>
             <p className="text-xs text-muted-foreground">each</p>
           </div>
         </div>

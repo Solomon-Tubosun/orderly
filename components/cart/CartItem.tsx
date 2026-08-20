@@ -12,7 +12,7 @@ interface CartItemProps {
 }
 
 export function CartItem({ item, onUpdate, onRemove }: CartItemProps) {
-  const itemTotal = item.quantity * Number(item.menuItem.price);
+  const itemTotal = item.quantity * Number(item.menuItem.price.toString());
 
   return (
     <div className="flex gap-3 p-3 bg-muted/50 rounded-lg">
@@ -29,7 +29,7 @@ export function CartItem({ item, onUpdate, onRemove }: CartItemProps) {
         <div className="flex items-start justify-between">
           <div className="min-w-0">
             <h4 className="font-medium truncate">{item.menuItem.name}</h4>
-            <p className="text-sm text-muted-foreground">{formatCurrency(item.menuItem.price)} each</p>
+            <p className="text-sm text-muted-foreground">{formatCurrency(item.menuItem.price.toString())} each</p>
             {item.notes && (
               <p className="text-xs text-muted-foreground mt-1">Note: {item.notes}</p>
             )}
